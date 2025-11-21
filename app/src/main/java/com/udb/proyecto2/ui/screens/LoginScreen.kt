@@ -81,7 +81,7 @@ fun LoginScreen(
     ) {
         // Título
         Text(
-            text = "Control de Gastos",
+            text = "Eventos",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
