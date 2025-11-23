@@ -1,4 +1,4 @@
-package com.udb.proyecto2.ui.screens
+package com.example.proyecto2.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
-import com.udb.proyecto2.data.Event
-import com.udb.proyecto2.viewmodel.EventViewModel
+import com.example.proyecto2.data.Event
+import com.example.proyecto2.viewmodel.EventViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 

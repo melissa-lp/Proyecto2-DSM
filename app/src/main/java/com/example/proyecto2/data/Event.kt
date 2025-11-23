@@ -1,4 +1,4 @@
-package com.udb.proyecto2.data
+package com.example.proyecto2.data
 
 import com.google.firebase.Timestamp
 

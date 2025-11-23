@@ -1,4 +1,4 @@
-package com.udb.proyecto2.ui.screens
+package com.example.proyecto2.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Timestamp
-import com.udb.proyecto2.viewmodel.EventViewModel
+import com.example.proyecto2.viewmodel.EventViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 

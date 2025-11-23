@@ -136,7 +136,7 @@ cd control-gastos
 4. **Registrar app Android:**
    - Ir a Project Settings
    - Click en "Add app" → Android
-   - Package name: `com.udb.proyecto2`
+   - Package name: `com.example.proyecto2`
    - Descargar `google-services.json`
 
 ### Paso 3: Configurar el Proyecto Local

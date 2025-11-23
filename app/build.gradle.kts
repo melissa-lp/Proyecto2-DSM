@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.udb.proyecto2"
+    namespace = "com.example.proyecto2"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.udb.proyecto2"
+        applicationId = "com.example.proyecto2"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -47,6 +47,7 @@ dependencies {
     // Firebase Firestore
     implementation("com.google.firebase:firebase-firestore")
     // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

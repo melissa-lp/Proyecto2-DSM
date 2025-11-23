@@ -1,4 +1,4 @@
-package com.udb.proyecto2.ui.theme
+package com.example.proyecto2.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

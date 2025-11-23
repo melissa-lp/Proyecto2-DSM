@@ -1,4 +1,4 @@
-package com.udb.proyecto2.data
+package com.example.proyecto2.data
 
 import android.content.Context
 import android.content.Intent

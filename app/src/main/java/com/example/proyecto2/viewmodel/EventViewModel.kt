@@ -1,9 +1,9 @@
-package com.udb.proyecto2.viewmodel
+package com.example.proyecto2.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.udb.proyecto2.data.Event
-import com.udb.proyecto2.data.EventRepository
+import com.example.proyecto2.data.Event
+import com.example.proyecto2.data.EventRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
