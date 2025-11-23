@@ -114,13 +114,43 @@ class EventViewModel : ViewModel() {
             repository.createEvent(event).fold(
                 onSuccess = {
                     _isLoading.value = false
-                    loadEvents() // Recargar lista
+                    loadEvents()
                     onSuccess()
                 },
                 onFailure = { exception ->
                     _error.value = exception.message
                     _isLoading.value = false
                     onError(exception.message ?: "Error al crear evento")
+                }
+            )
+        }
+    }
+
+    fun loadMyEvents() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            repository.getUserEvents().fold(
+                onSuccess = { eventList ->
+                    _events.value = eventList
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Error al cargar mis eventos"
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+    fun cancelAttendanceFromMyEvents(eventId: String) {
+        viewModelScope.launch {
+            repository.cancelAttendance(eventId).fold(
+                onSuccess = {
+                    loadMyEvents()
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Error al cancelar asistencia"
                 }
             )
         }
