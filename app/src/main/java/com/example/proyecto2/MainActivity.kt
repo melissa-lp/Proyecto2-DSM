@@ -15,6 +15,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyecto2.ui.screens.CreateEventScreen
 import com.example.proyecto2.ui.screens.EventListScreen
 import com.example.proyecto2.ui.screens.LoginScreen
+import com.example.proyecto2.ui.screens.EditEventScreen
+import com.example.proyecto2.ui.screens.MyCreatedEventsScreen
 import com.example.proyecto2.ui.theme.proyecto2Theme
 import com.example.proyecto2.viewmodel.AuthViewModel
 import com.example.proyecto2.viewmodel.EventViewModel
@@ -24,6 +26,7 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.Alignment
+import com.example.proyecto2.data.Event
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +56,6 @@ sealed class BottomNavItem(
     object Create : BottomNavItem("create", "Crear", Icons.Default.Add)
     object MyEvents : BottomNavItem("my_events", "Mis Eventos", Icons.Default.EventAvailable)
     object Profile : BottomNavItem("profile", "Perfil", Icons.Default.Person)
-
     object History : BottomNavItem("history", "Historial", Icons.Default.History)
 }
 
@@ -84,6 +86,9 @@ fun MainScreenWithBottomNav(
     eventViewModel: EventViewModel
 ) {
     var selectedItem by remember { mutableStateOf<BottomNavItem>(BottomNavItem.Home) }
+    var selectedEventId by remember { mutableStateOf<String?>(null) }
+    var selectedEventForEdit by remember { mutableStateOf<Event?>(null) }
+    var showMyCreatedEvents by remember { mutableStateOf(false) }
 
     val items = listOf(
         BottomNavItem.Home,
@@ -103,8 +108,12 @@ fun MainScreenWithBottomNav(
 
     Scaffold(
         bottomBar = {
-
-            if (selectedItem != BottomNavItem.History) {
+            // Ocultar bottom nav cuando estamos en detalles, edición, historial o eventos creados
+            if (selectedItem != BottomNavItem.History &&
+                selectedEventId == null &&
+                selectedEventForEdit == null &&
+                !showMyCreatedEvents
+            ) {
                 NavigationBar(
                     containerColor = MaterialTheme.colorScheme.surface,
                     tonalElevation = 8.dp
@@ -122,41 +131,84 @@ fun MainScreenWithBottomNav(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            when (selectedItem) {
-                BottomNavItem.Home -> {
-                    EventListScreen(
-                        onNavigateToDetail = { },
-                        onNavigateToCreate = { selectedItem = BottomNavItem.Create },
-                        onSignOut = { authViewModel.signOut() },
+            when {
+                // Pantalla de edición de evento
+                selectedEventForEdit != null -> {
+                    EditEventScreen(
+                        event = selectedEventForEdit!!,
+                        onNavigateBack = {
+                            selectedEventForEdit = null
+                            showMyCreatedEvents = true
+                        },
+                        onDelete = {
+                            selectedEventForEdit = null
+                            showMyCreatedEvents = true
+                        },
                         viewModel = eventViewModel
-                    )
-                }
-                BottomNavItem.Create -> {
-                    CreateEventScreen(
-                        onNavigateBack = { selectedItem = BottomNavItem.Home },
-                        viewModel = eventViewModel
-                    )
-                }
-                BottomNavItem.MyEvents -> {
-                    MyEventsScreen(
-                        onNavigateToDetail = { },
-                        viewModel = eventViewModel
-                    )
-                }
-                BottomNavItem.Profile -> {
-
-                    ProfileScreen(
-                        onSignOut = { authViewModel.signOut() },
-                        onNavigateToHistory = { selectedItem = BottomNavItem.History },
-                        authViewModel = authViewModel
                     )
                 }
 
-                BottomNavItem.History -> {
-                    com.example.proyecto2.ui.screens.HistoryScreen(
-                        onNavigateBack = { selectedItem = BottomNavItem.Profile },
+                // Pantalla de eventos creados
+                showMyCreatedEvents -> {
+                    MyCreatedEventsScreen(
+                        onNavigateBack = {
+                            showMyCreatedEvents = false
+                            selectedItem = BottomNavItem.Profile
+                        },
+                        onNavigateToEdit = { event ->
+                            selectedEventForEdit = event
+                        },
                         viewModel = eventViewModel
                     )
+                }
+
+                // Pantalla de detalles de evento
+                selectedEventId != null -> {
+                    com.example.proyecto2.ui.screens.EventDetailScreen(
+                        eventId = selectedEventId!!,
+                        onNavigateBack = { selectedEventId = null },
+                        viewModel = eventViewModel
+                    )
+                }
+
+                // Pantallas principales
+                else -> {
+                    when (selectedItem) {
+                        BottomNavItem.Home -> {
+                            EventListScreen(
+                                onNavigateToDetail = { eventId -> selectedEventId = eventId },
+                                onNavigateToCreate = { selectedItem = BottomNavItem.Create },
+                                onSignOut = { authViewModel.signOut() },
+                                viewModel = eventViewModel
+                            )
+                        }
+                        BottomNavItem.Create -> {
+                            CreateEventScreen(
+                                onNavigateBack = { selectedItem = BottomNavItem.Home },
+                                viewModel = eventViewModel
+                            )
+                        }
+                        BottomNavItem.MyEvents -> {
+                            MyEventsScreen(
+                                onNavigateToDetail = { eventId -> selectedEventId = eventId },
+                                viewModel = eventViewModel
+                            )
+                        }
+                        BottomNavItem.Profile -> {
+                            ProfileScreen(
+                                onSignOut = { authViewModel.signOut() },
+                                onNavigateToHistory = { selectedItem = BottomNavItem.History },
+                                onNavigateToMyCreatedEvents = { showMyCreatedEvents = true },
+                                authViewModel = authViewModel
+                            )
+                        }
+                        BottomNavItem.History -> {
+                            com.example.proyecto2.ui.screens.HistoryScreen(
+                                onNavigateBack = { selectedItem = BottomNavItem.Profile },
+                                viewModel = eventViewModel
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -259,7 +311,6 @@ fun MyEventsScreen(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Encabezado
                         item {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
@@ -296,7 +347,6 @@ fun MyEventsScreen(
                             }
                         }
 
-                        // Lista de eventos
                         items(events) { event ->
                             MyEventCard(
                                 event = event,
@@ -338,7 +388,6 @@ fun MyEventCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Badge de confirmado
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -375,7 +424,6 @@ fun MyEventCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Título
             Text(
                 text = event.title,
                 style = MaterialTheme.typography.titleLarge,
@@ -384,7 +432,6 @@ fun MyEventCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Descripción
             Text(
                 text = event.description,
                 style = MaterialTheme.typography.bodyMedium,
@@ -394,7 +441,6 @@ fun MyEventCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Fecha, hora y ubicación
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -450,7 +496,6 @@ fun MyEventCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Botón cancelar asistencia
             OutlinedButton(
                 onClick = onCancelAttendance,
                 modifier = Modifier.fillMaxWidth(),
@@ -476,6 +521,7 @@ fun MyEventCard(
 fun ProfileScreen(
     onSignOut: () -> Unit,
     onNavigateToHistory: () -> Unit,
+    onNavigateToMyCreatedEvents: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     val currentUser by authViewModel.currentUser.collectAsState()
@@ -530,7 +576,7 @@ fun ProfileScreen(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { }
+                onClick = onNavigateToMyCreatedEvents
             ) {
                 Row(
                     modifier = Modifier

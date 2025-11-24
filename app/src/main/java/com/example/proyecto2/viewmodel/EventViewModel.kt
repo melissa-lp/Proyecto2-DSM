@@ -106,9 +106,7 @@ class EventViewModel : ViewModel() {
                 category = category,
                 organizerId = currentUser.uid,
                 organizerName = currentUser.email ?: "Usuario",
-                maxAttendees = maxAttendees,
-                isActive = true,
-                createdAt = Timestamp.now()
+                maxAttendees = maxAttendees
             )
 
             repository.createEvent(event).fold(
@@ -143,6 +141,7 @@ class EventViewModel : ViewModel() {
             )
         }
     }
+
     fun cancelAttendanceFromMyEvents(eventId: String) {
         viewModelScope.launch {
             repository.cancelAttendance(eventId).fold(
@@ -151,6 +150,131 @@ class EventViewModel : ViewModel() {
                 },
                 onFailure = { exception ->
                     _error.value = exception.message ?: "Error al cancelar asistencia"
+                }
+            )
+        }
+    }
+
+    // Agregar comentario
+    fun addComment(eventId: String, commentText: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            repository.addComment(eventId, commentText).fold(
+                onSuccess = {
+                    loadEvents() // Recargar eventos
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Error al agregar comentario"
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+
+    // Agregar calificación
+    fun addRating(eventId: String, rating: Float) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            repository.addRating(eventId, rating).fold(
+                onSuccess = {
+                    loadEvents() // Recargar eventos
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Error al agregar calificación"
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+
+    // Cargar eventos creados por el usuario
+    fun loadMyCreatedEvents() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            repository.getMyCreatedEvents().fold(
+                onSuccess = { eventList ->
+                    _events.value = eventList
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Error al cargar eventos creados"
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+
+    // Actualizar evento
+    fun updateEvent(
+        eventId: String,
+        title: String,
+        description: String,
+        date: Timestamp,
+        time: String,
+        location: String,
+        category: String,
+        maxAttendees: Int?,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            val event = Event(
+                id = eventId,
+                title = title,
+                description = description,
+                date = date,
+                time = time,
+                location = location,
+                category = category,
+                maxAttendees = maxAttendees
+            )
+
+            repository.updateEvent(eventId, event).fold(
+                onSuccess = {
+                    _isLoading.value = false
+                    loadMyCreatedEvents()
+                    onSuccess()
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message
+                    _isLoading.value = false
+                    onError(exception.message ?: "Error al actualizar evento")
+                }
+            )
+        }
+    }
+
+    // Eliminar evento
+    fun deleteEvent(
+        eventId: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            repository.deleteEvent(eventId).fold(
+                onSuccess = {
+                    _isLoading.value = false
+                    loadMyCreatedEvents()
+                    onSuccess()
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message
+                    _isLoading.value = false
+                    onError(exception.message ?: "Error al eliminar evento")
                 }
             )
         }

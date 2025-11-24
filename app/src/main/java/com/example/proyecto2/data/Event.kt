@@ -9,22 +9,19 @@ data class Event(
     val date: Timestamp = Timestamp.now(),
     val time: String = "",
     val location: String = "",
+    val category: String = "",
     val organizerId: String = "",
     val organizerName: String = "",
     val attendees: List<String> = emptyList(),
     val maxAttendees: Int? = null,
-    val imageUrl: String? = null,
-    val category: String = "General",
-    val isActive: Boolean = true,
-    val createdAt: Timestamp = Timestamp.now(),
-    val averageRating: Double = 0.0,
-    val totalRatings: Int = 0
+    val comments: List<Comment> = emptyList(),
+    val ratings: Map<String, Float> = emptyMap(),
+    val averageRating: Float = 0f
 ) {
     fun isUserAttending(userId: String): Boolean {
         return attendees.contains(userId)
     }
 
-    //Se verifica si el evento está lleno
     fun isFull(): Boolean {
         return maxAttendees?.let { attendees.size >= it } ?: false
     }

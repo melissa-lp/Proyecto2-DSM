@@ -2,7 +2,8 @@ package com.example.proyecto2.data
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.Timestamp
 import kotlinx.coroutines.tasks.await
 
 class EventRepository {
@@ -10,21 +11,18 @@ class EventRepository {
     private val auth = FirebaseAuth.getInstance()
     private val eventsCollection = db.collection("events")
 
-    // Eventos activos
-    // Obtener todos los eventos (filtrado en memoria)
+    // Obtener todos los eventos
     suspend fun getEvents(): Result<List<Event>> {
         return try {
             val snapshot = eventsCollection
-                .get()  // Sin filtros ni ordenamiento en Firestore
+                .get()
                 .await()
 
-            // Filtrar y ordenar en memoria (no requiere índice)
             val events = snapshot.documents
                 .mapNotNull { doc ->
                     doc.toObject(Event::class.java)?.copy(id = doc.id)
                 }
-                .filter { it.isActive }  // Filtrar activos
-                .sortedBy { it.date }    // Ordenar por fecha
+                .sortedBy { it.date }  // Ordenar por fecha
 
             Result.success(events)
         } catch (e: Exception) {
@@ -59,7 +57,7 @@ class EventRepository {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Usuario no autenticado"))
 
             eventsCollection.document(eventId)
-                .update("attendees", com.google.firebase.firestore.FieldValue.arrayUnion(userId))
+                .update("attendees", FieldValue.arrayUnion(userId))
                 .await()
 
             Result.success(Unit)
@@ -74,7 +72,7 @@ class EventRepository {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Usuario no autenticado"))
 
             eventsCollection.document(eventId)
-                .update("attendees", com.google.firebase.firestore.FieldValue.arrayRemove(userId))
+                .update("attendees", FieldValue.arrayRemove(userId))
                 .await()
 
             Result.success(Unit)
@@ -97,6 +95,131 @@ class EventRepository {
                 doc.toObject(Event::class.java)?.copy(id = doc.id)
             }
             Result.success(events)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Agregar comentario
+    suspend fun addComment(eventId: String, commentText: String): Result<Unit> {
+        return try {
+            val currentUser = auth.currentUser ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val comment = Comment(
+                userId = currentUser.uid,
+                userName = currentUser.email?.substringBefore("@") ?: "Usuario",
+                text = commentText,
+                timestamp = Timestamp.now()
+            )
+
+            eventsCollection.document(eventId)
+                .update("comments", FieldValue.arrayUnion(comment))
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Agregar calificación
+    suspend fun addRating(eventId: String, rating: Float): Result<Unit> {
+        return try {
+            val currentUser = auth.currentUser ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val eventDoc = eventsCollection.document(eventId).get().await()
+            val event = eventDoc.toObject(Event::class.java) ?: return Result.failure(Exception("Evento no encontrado"))
+
+            // Actualizar ratings
+            val updatedRatings = event.ratings.toMutableMap()
+            updatedRatings[currentUser.uid] = rating
+
+            // Calcular nuevo promedio
+            val averageRating = updatedRatings.values.average().toFloat()
+
+            eventsCollection.document(eventId)
+                .update(
+                    mapOf(
+                        "ratings" to updatedRatings,
+                        "averageRating" to averageRating
+                    )
+                )
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    // Obtener eventos creados por el usuario actual
+    suspend fun getMyCreatedEvents(): Result<List<Event>> {
+        return try {
+            val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val snapshot = eventsCollection
+                .whereEqualTo("organizerId", userId)
+                .get()
+                .await()
+
+            val events = snapshot.documents
+                .mapNotNull { doc ->
+                    doc.toObject(Event::class.java)?.copy(id = doc.id)
+                }
+                .sortedByDescending { it.date }  // Más recientes primero
+
+            Result.success(events)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Actualizar evento
+    suspend fun updateEvent(eventId: String, event: Event): Result<Unit> {
+        return try {
+            val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val existingEvent = eventsCollection.document(eventId).get().await()
+            val existingEventData = existingEvent.toObject(Event::class.java)
+
+            if (existingEventData?.organizerId != userId) {
+                return Result.failure(Exception("No tienes permiso para editar este evento"))
+            }
+
+            val updateData = hashMapOf(
+                "title" to event.title,
+                "description" to event.description,
+                "date" to event.date,
+                "time" to event.time,
+                "location" to event.location,
+                "category" to event.category,
+                "maxAttendees" to event.maxAttendees
+            )
+
+            eventsCollection.document(eventId)
+                .update(updateData as Map<String, Any>)
+                .await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Eliminar evento
+    suspend fun deleteEvent(eventId: String): Result<Unit> {
+        return try {
+            val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Usuario no autenticado"))
+
+            val existingEvent = eventsCollection.document(eventId).get().await()
+            val existingEventData = existingEvent.toObject(Event::class.java)
+
+            if (existingEventData?.organizerId != userId) {
+                return Result.failure(Exception("No tienes permiso para eliminar este evento"))
+            }
+
+            eventsCollection.document(eventId).delete().await()
+
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
