@@ -53,6 +53,8 @@ sealed class BottomNavItem(
     object Create : BottomNavItem("create", "Crear", Icons.Default.Add)
     object MyEvents : BottomNavItem("my_events", "Mis Eventos", Icons.Default.EventAvailable)
     object Profile : BottomNavItem("profile", "Perfil", Icons.Default.Person)
+
+    object History : BottomNavItem("history", "Historial", Icons.Default.History)
 }
 
 @Composable
@@ -90,40 +92,31 @@ fun MainScreenWithBottomNav(
         BottomNavItem.Profile
     )
 
-    // Recarga de eventos
     LaunchedEffect(selectedItem) {
         when (selectedItem) {
             BottomNavItem.Home -> eventViewModel.loadEvents()
             BottomNavItem.MyEvents -> eventViewModel.loadMyEvents()
+            BottomNavItem.History -> eventViewModel.loadEvents()
             else -> {}
         }
     }
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surface,
-                tonalElevation = 8.dp
-            ) {
-                items.forEach { item ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = item.title
-                            )
-                        },
-                        label = { Text(item.title) },
-                        selected = selectedItem == item,
-                        onClick = { selectedItem = item },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+            if (selectedItem != BottomNavItem.History) {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp
+                ) {
+                    items.forEach { item ->
+                        NavigationBarItem(
+                            icon = { Icon(item.icon, contentDescription = item.title) },
+                            label = { Text(item.title) },
+                            selected = selectedItem == item,
+                            onClick = { selectedItem = item }
                         )
-                    )
+                    }
                 }
             }
         }
@@ -132,43 +125,37 @@ fun MainScreenWithBottomNav(
             when (selectedItem) {
                 BottomNavItem.Home -> {
                     EventListScreen(
-                        onNavigateToDetail = { eventId ->
-                            // TODO
-                        },
-                        onNavigateToCreate = {
-                            selectedItem = BottomNavItem.Create
-                        },
-                        onSignOut = {
-                            authViewModel.signOut()
-                        },
+                        onNavigateToDetail = { },
+                        onNavigateToCreate = { selectedItem = BottomNavItem.Create },
+                        onSignOut = { authViewModel.signOut() },
                         viewModel = eventViewModel
                     )
                 }
-
                 BottomNavItem.Create -> {
                     CreateEventScreen(
-                        onNavigateBack = {
-                            selectedItem = BottomNavItem.Home
-                        },
+                        onNavigateBack = { selectedItem = BottomNavItem.Home },
                         viewModel = eventViewModel
                     )
                 }
-
                 BottomNavItem.MyEvents -> {
                     MyEventsScreen(
-                        onNavigateToDetail = { eventId ->
-                            // TODO
-                        },
+                        onNavigateToDetail = { },
                         viewModel = eventViewModel
                     )
                 }
-
                 BottomNavItem.Profile -> {
+
                     ProfileScreen(
-                        onSignOut = {
-                            authViewModel.signOut()
-                        },
+                        onSignOut = { authViewModel.signOut() },
+                        onNavigateToHistory = { selectedItem = BottomNavItem.History },
                         authViewModel = authViewModel
+                    )
+                }
+
+                BottomNavItem.History -> {
+                    com.udb.proyecto2.ui.screens.HistoryScreen(
+                        onNavigateBack = { selectedItem = BottomNavItem.Profile },
+                        viewModel = eventViewModel
                     )
                 }
             }
@@ -488,6 +475,7 @@ fun MyEventCard(
 @Composable
 fun ProfileScreen(
     onSignOut: () -> Unit,
+    onNavigateToHistory: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     val currentUser by authViewModel.currentUser.collectAsState()
@@ -506,7 +494,6 @@ fun ProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Header del perfil
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -517,7 +504,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(24.dp),
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
@@ -541,21 +528,20 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Opciones del perfil
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /* TODO: Mis eventos creados */ }
+                onClick = { }
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.Event, contentDescription = null)
                         Text("Eventos creados", style = MaterialTheme.typography.bodyLarge)
@@ -566,18 +552,18 @@ fun ProfileScreen(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /* TODO: Historial */ }
+                onClick = onNavigateToHistory
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.History, contentDescription = null)
                         Text("Historial", style = MaterialTheme.typography.bodyLarge)
@@ -588,18 +574,18 @@ fun ProfileScreen(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /* TODO: Configuración */ }
+                onClick = { }
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.Settings, contentDescription = null)
                         Text("Configuración", style = MaterialTheme.typography.bodyLarge)
@@ -610,7 +596,6 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Botón cerrar sesión
             Button(
                 onClick = onSignOut,
                 modifier = Modifier
