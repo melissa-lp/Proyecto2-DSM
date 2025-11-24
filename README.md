@@ -1,218 +1,226 @@
-# 💰 Control de Gastos - Aplicación Android
+# 📱 EVENTOS APP
 
-Aplicación móvil para Android desarrollada con Kotlin y Jetpack Compose que permite a los usuarios gestionar sus gastos personales de manera eficiente, con autenticación segura mediante Firebase y almacenamiento en tiempo real con Cloud Firestore.
-- Enlace a video de Youtube: https://youtu.be/YvRyf_1QO8g
+Aplicación móvil Android para la gestión integral de eventos, desarrollada con Jetpack Compose y Firebase.
 
-# 👥 Integrantes
-- Emilia Eunice Meléndez Barreiro, MB211545
-- César Enrique Regalado Villalta, RV210723
-- Denis Josué Vásquez Rodríguez, VR222731
-- Victor Amilcar Elías Peña, EP171613
-- Jairo Dennis Ramos Jiménez, RJ172021
-- Melissa Vanina López Peña, LP223029
+## 👥 INTEGRANTES
 
-## 📱 Características Principales
+| Nombre | Carnet |
+|--------|--------|
+| Jairo Dennis Ramos Jiménez | RJ172021 |
+| Melissa Vanina López Peña | LP223029 |
+| César Enrique Regalado Villalta | RV210723 |
+| Denis Josué Vásquez Rodríguez | VR222731 |
+| Emilia Eunice Meléndez Barreiro | MB211545 |
+| Victor Amilcar Elías Peña | EP171613 |
 
-- ✅ **Autenticación Segura**
-  - Inicio de sesión con correo electrónico y contraseña
-  - Inicio de sesión con Google 
-  - Gestión de sesiones persistentes
+## 🔗 ENLACES
 
-- ✅ **Gestión de Gastos (CRUD Completo)**
-  - Agregar gastos con nombre, monto, categoría y descripción
-  - Editar gastos existentes
-  - Eliminar gastos con confirmación
-  - Visualización en tiempo real
-
-- ✅ **Filtros Avanzados**
-  - Filtrar por categoría 
-  - Filtrar por mes y año
-  - Total mensual automático
-  - Total filtrado dinámico
-
-- ✅ **Validaciones Inteligentes**
-  - Validación de formato de correo electrónico
-  - Validación de montos (solo números, máximo 2 decimales)
-  - Validación de campos obligatorios
-  - Mensajes de error descriptivos en tiempo real
-
-- ✅ **Diseño Moderno**
-  - Interfaz Material Design 3
-  - Paleta de colores personalizada
-  - Responsive design
-  - Animaciones fluidas
-
-## 🛠️ Tecnologías Utilizadas
-
-| Tecnología | Versión | Descripción |
-|------------|---------|-------------|
-| **Kotlin** | 1.9.0 | Lenguaje de programación principal |
-| **Jetpack Compose** | 1.6.0 | Framework de UI declarativa |
-| **Firebase Authentication** | 34.4.0 | Autenticación de usuarios |
-| **Cloud Firestore** | 34.4.0 | Base de datos NoSQL en tiempo real |
-| **Google Sign-In** | 21.2.0 | Autenticación con Google |
-| **Material 3** | 1.2.0 | Sistema de diseño de Google |
-
-## 🏗️ Arquitectura del Proyecto
-
-```
-app/src/main/java/com/udb/proyecto2/
-├── data/                          # Capa de datos
-│   ├── AuthRepository.kt         # Repositorio de autenticación
-│   ├── ExpenseRepository.kt      # Repositorio de gastos
-│   ├── Expense.kt                # Modelo de datos de gastos
-│   ├── GoogleSignInHelper.kt     # Helper para Google Sign-In
-│   └── Constants.kt              # Constantes del proyecto
-│
-├── viewmodel/                     # Capa de lógica de negocio
-│   ├── AuthViewModel.kt          # ViewModel de autenticación
-│   └── ExpenseViewModel.kt       # ViewModel de gastos
-│
-├── ui/                            # Capa de presentación
-│   ├── screens/                  # Pantallas de la aplicación
-│   │   ├── LoginScreen.kt       # Pantalla de inicio de sesión
-│   │   ├── HomeScreen.kt        # Pantalla principal
-│   │   ├── AddExpenseScreen.kt  # Agregar nuevo gasto
-│   │   └── EditExpenseScreen.kt # Editar gasto existente
-│   │
-│   ├── components/               # Componentes reutilizables
-│   │   └── FilterBar.kt         # Barra de filtros
-│   │
-│   └── theme/                    # Configuración de tema
-│       ├── Color.kt             # Paleta de colores
-│       ├── Theme.kt             # Tema principal
-│       └── Type.kt              # Tipografía
-│
-└── MainActivity.kt               # Actividad principal y navegación
-```
+- **Trello del Proyecto**: [https://trello.com/invite/b/691cb1f4acf4fde041bf2cf0/ATTI4cfe312bfa7bd7274019bf4af41d87563B96EB35/proyecto-2-dsm](https://trello.com/invite/b/691cb1f4acf4fde041bf2cf0/ATTI4cfe312bfa7bd7274019bf4af41d87563B96EB35/proyecto-2-dsm)
+- **Firebase Console**: [https://console.firebase.google.com/](https://console.firebase.google.com/)
+- **Documentación Jetpack Compose**: [https://developer.android.com/jetpack/compose](https://developer.android.com/jetpack/compose)
 
 
-## 📊 Modelo de Datos
+## 📋 DESCRIPCIÓN
 
-### Expense (Gasto)
-```kotlin
-data class Expense(
-    val id: String,              // ID único del documento
-    val userId: String,          // ID del usuario usuario
-    val name: String,            // Nombre del gasto
-    val amount: Double,          // Monto del gasto
-    val category: String,        // Categoría del gasto
-    val date: Timestamp,         // Fecha del gasto
-    val description: String      // Descripción opcional
-)
-```
+**Eventos App** es una aplicación Android nativa que permite a los usuarios crear, descubrir y participar en eventos de manera eficiente. La aplicación integra funcionalidades completas para la planificación y desarrollo de un evento, desde su creación hasta la valoración posterior mediante comentarios y calificaciones.
 
-## 🚀 Instalación y Configuración
+## ✨ CARACTERÍSTICAS PRINCIPALES
 
-### Prerrequisitos
+### 🔐 Autenticación
+- Registro e inicio de sesión con correo electrónico y contraseña
+- Inicio de sesión con Google (Google Sign-In)
+- Gestión segura de sesiones
 
-- Android Studio Hedgehog | 2023.1.1 o superior
-- JDK 11 o superior
-- Cuenta de Google/Firebase
-- Dispositivo Android con API 24+ (Android 7.0) o emulador
+### 📅 Gestión de Eventos
+- **Crear eventos**: Título, descripción, fecha, hora, ubicación, categoría y capacidad máxima
+- **Ver eventos disponibles**: Lista completa con búsqueda y filtros
+- **Editar eventos propios**: Modificar detalles de eventos creados
+- **Eliminar eventos**: Con confirmación de seguridad
+- **Detalles completos**: Información detallada de cada evento
 
-### Paso 1: Clonar el Repositorio
+### 👥 Participación
+- **Confirmar asistencia**: Registro para asistir a eventos
+- **Cancelar asistencia**: Opción de cancelar participación
+- **Mis eventos**: Vista de eventos confirmados
+- **Eventos creados**: Gestión de eventos organizados
+
+### 💬 Interacción Social
+- **Comentarios**: Dejar opiniones sobre eventos finalizados
+- **Calificaciones**: Sistema de valoración con estrellas (1-5)
+
+### 📊 Historial
+- Historial de eventos pasados
+- Vista de eventos finalizados con participación
+- Información de asistentes por evento
+
+### 🎨 Interfaz
+- Diseño moderno siguiendo Material Design 3
+- Navegación intuitiva con Bottom Navigation Bar
+- Estados de carga, error y vacío bien definidos
+- Responsive y adaptable
+
+## 🛠️ TECNOLOGÍAS UTILIZADAS
+
+### Frontend
+- **Kotlin**: Lenguaje de programación principal
+- **Jetpack Compose**: Framework de UI declarativo
+- **Material Design 3**: Sistema de diseño
+- **Compose Navigation**: Gestión de navegación
+
+### Backend
+- **Firebase Authentication**: Gestión de usuarios
+- **Cloud Firestore**: Base de datos en tiempo real
+- **Firebase Google Sign-In**: Autenticación social
+
+### Arquitectura
+- **MVVM (Model-View-ViewModel)**: Patrón arquitectónico
+- **StateFlow**: Gestión reactiva de estados
+- **Coroutines**: Programación asíncrona
+- **Repository Pattern**: Abstracción de fuentes de datos
+
+### Herramientas
+- **Android Studio**: IDE de desarrollo
+- **Gradle**: Sistema de construcción
+- **Git**: Control de versiones
+
+## 📦 REQUISITOS DEL SISTEMA
+
+- **Android SDK**: Mínimo API 24 (Android 7.0)
+- **Android Studio**: Última versión estable
+- **Kotlin**: 1.9+
+- **Gradle**: 8.0+
+
+## 🚀 INSTALACIÓN Y CONFIGURACIÓN
+
+### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/melissa-lp/Foro2-DSM.git
-cd control-gastos
+git clone https://github.com/melissa-lp/Proyecto2-DSM
+cd eventos-app
 ```
 
-### Paso 2: Configurar Firebase
+### 2. Configurar Firebase
 
-1. **Crear proyecto en Firebase Console:**
-   - Ir a [Firebase Console](https://console.firebase.google.com/)
-   - Crear un nuevo proyecto llamado `control-gastos`
+1. Crear un proyecto en [Firebase Console](https://console.firebase.google.com/)
+2. Agregar una aplicación Android con el package name: `com.example.proyecto2`
+3. Descargar el archivo `google-services.json`
+4. Colocar `google-services.json` en la carpeta `app/`
 
-2. **Habilitar Authentication:**
-   - Ir a Authentication → Sign-in method
-   - Habilitar **Email/Password**
-   - Habilitar **Google** 
+### 3. Habilitar servicios de Firebase
 
-3. **Crear Firestore Database:**
-   - Ir a Firestore Database → Create database
-   - Seleccionar "Start in test mode"
-   - Eligir ubicación: `us-central1`
+En Firebase Console:
+- **Authentication**: Habilitar Email/Password y Google Sign-In
+- **Firestore Database**: Crear base de datos en modo producción
+- **Configurar reglas de seguridad** (ver sección de Firestore Rules)
 
-4. **Registrar app Android:**
-   - Ir a Project Settings
-   - Click en "Add app" → Android
-   - Package name: `com.example.proyecto2`
-   - Descargar `google-services.json`
+### 4. Configurar Google Sign-In
 
-### Paso 3: Configurar el Proyecto Local
-
-1. **Colocar google-services.json en /app:**
-```
-   proyecto2/
-   └── app/
-       ├── google-services.json
-       └── src/
-```
-
-2. **Obtener SHA-1 (para Google Sign-In):**
-   
-   **Mac/Linux:**
+1. En Firebase Console → Authentication → Sign-in method → Google
+2. Habilitar y agregar email de soporte
+3. Obtener el SHA-1 de tu keystore:
 ```bash
-   keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
-```
-   
-   **Windows:**
-```bash
-   keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
-```
-
-3. **Agregar SHA-1 en Firebase:**
-   - Copiar el SHA-1 obtenido
-   - Ir a Firebase Console → Project Settings → Your apps
-   - Agregar la huella digital SHA-1
-   - Descargar nuevamente `google-services.json` actualizado
-
-4. **Configurar Web Client ID:**
-   - Ir a Firebase Console → Authentication → Sign-in method → Google
-   - Copiar el **Web Client ID**
-   - Abrir `app/src/main/java/com/udb/proyecto2/data/Constants.kt`
-   - Reemplazar el valor:
-```kotlin
-   const val WEB_CLIENT_ID = "WEB_CLIENT_ID.apps.googleusercontent.com"
-```
-
-### Paso 4: Compilar y Ejecutar
-```bash
-# En Android Studio:
-1. Build → Clean Project
-2. Build → Rebuild Project
-3. Run ▶️
-```
-
-## 👥 Configuración para Colaboradores
-
-Para los colaboradores del proyecto, seguir estos pasos adicionales:
-
-### 1. Obtener tu SHA-1
-```bash
-# Mac/Linux
 keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
-
-# Windows
-keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
 ```
+4. Agregar SHA-1 en Firebase Console → Configuración del proyecto → Tus apps
 
-### 2. Enviar el SHA-1 al administrador del proyecto
-
-El administrador debe:
-- Ir a Firebase Console → Project Settings
-- Agregar tu SHA-1 en "SHA certificate fingerprints"
-- Descargar el nuevo `google-services.json`
-- Hacer commit y push del archivo actualizado
-
-### 3. Actualizar copia local
+### 5. Compilar y ejecutar
 ```bash
-git pull origin main
-```
-
-### 4. Limpiar y reconstruir
-```bash
+# En Android Studio
+File → Sync Project with Gradle Files
 Build → Clean Project
 Build → Rebuild Project
-Run ▶️
+Run → Run 'app'
 ```
+
+## 🔥 FIRESTORE RULES
+
+Configurar las siguientes reglas de seguridad en Firestore:
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Eventos: Lectura pública, escritura autenticada
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && 
+                               request.auth.uid == resource.data.organizerId;
+    }
+  }
+}
+```
+
+## 📂 ESTRUCTURA DEL PROYECTO
+```
+app/
+├── src/
+│   ├── main/
+│   │   ├── java/com/example/proyecto2/
+│   │   │   ├── data/
+│   │   │   │   ├── Event.kt
+│   │   │   │   ├── Comment.kt
+│   │   │   │   ├── EventRepository.kt
+│   │   │   │   ├── AuthRepository.kt
+│   │   │   │   ├── GoogleSignInHelper.kt
+│   │   │   │   └── Constants.kt
+│   │   │   ├── ui/
+│   │   │   │   ├── screens/
+│   │   │   │   │   ├── LoginScreen.kt
+│   │   │   │   │   ├── EventListScreen.kt
+│   │   │   │   │   ├── EventDetailScreen.kt
+│   │   │   │   │   ├── CreateEventScreen.kt
+│   │   │   │   │   ├── EditEventScreen.kt
+│   │   │   │   │   ├── MyCreatedEventsScreen.kt
+│   │   │   │   │   └── HistoryScreen.kt
+│   │   │   │   └── theme/
+│   │   │   │       ├── Color.kt
+│   │   │   │       ├── Theme.kt
+│   │   │   │       └── Type.kt
+│   │   │   ├── viewmodel/
+│   │   │   │   ├── AuthViewModel.kt
+│   │   │   │   └── EventViewModel.kt
+│   │   │   └── MainActivity.kt
+│   │   └── res/
+│   │       ├── values/
+│   │       └── drawable/
+│   └── google-services.json
+└── build.gradle.kts
+```
+
+## 🎯 CASOS DE USO
+
+### Usuario No Registrado
+1. Ver pantalla de login
+2. Registrarse con email/password o Google
+3. Iniciar sesión
+
+### Usuario Registrado
+1. Ver lista de eventos disponibles
+2. Ver detalles de un evento
+3. Confirmar asistencia a un evento
+4. Ver sus eventos confirmados
+5. Cancelar asistencia
+
+### Organizador
+1. Crear un nuevo evento
+2. Ver sus eventos creados
+3. Editar evento
+4. Eliminar evento
+5. Ver estadísticas de asistentes
+
+### Participante de Evento Finalizado
+1. Ver eventos pasados en el historial
+2. Dejar comentarios
+3. Calificar el evento
+4. Ver comentarios de otros usuarios
+
+## 📄 LICENCIA
+
+Este proyecto está bajo la Licencia Creative Commons Atribución-NoComercial 4.0 Internacional (CC BY-NC 4.0).
+
+**Términos:**
+- ✅ Compartir: Copiar y redistribuir el material
+- ✅ Adaptar: Remezclar, transformar y construir sobre el material
+- ❌ Uso comercial: No se permite el uso comercial
+- ✅ Atribución: Se debe dar crédito apropiado
+
+© 2025 Equipo de Desarrollo - Universidad Don Bosco
