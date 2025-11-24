@@ -1,4 +1,4 @@
-package com.udb.proyecto2.ui.screens
+package com.example.proyecto2.ui.screens
 
 import android.app.Activity.RESULT_OK
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.udb.proyecto2.data.GoogleSignInHelper
-import com.udb.proyecto2.viewmodel.AuthState
-import com.udb.proyecto2.viewmodel.AuthViewModel
+import com.example.proyecto2.data.GoogleSignInHelper
+import com.example.proyecto2.viewmodel.AuthState
+import com.example.proyecto2.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(

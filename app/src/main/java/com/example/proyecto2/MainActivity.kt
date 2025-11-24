@@ -1,4 +1,4 @@
-package com.udb.proyecto2
+package com.example.proyecto2
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,12 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.udb.proyecto2.ui.screens.CreateEventScreen
-import com.udb.proyecto2.ui.screens.EventListScreen
-import com.udb.proyecto2.ui.screens.LoginScreen
-import com.udb.proyecto2.ui.theme.proyecto2Theme
-import com.udb.proyecto2.viewmodel.AuthViewModel
-import com.udb.proyecto2.viewmodel.EventViewModel
+import com.example.proyecto2.ui.screens.CreateEventScreen
+import com.example.proyecto2.ui.screens.EventListScreen
+import com.example.proyecto2.ui.screens.LoginScreen
+import com.example.proyecto2.ui.theme.proyecto2Theme
+import com.example.proyecto2.viewmodel.AuthViewModel
+import com.example.proyecto2.viewmodel.EventViewModel
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -317,7 +317,7 @@ fun MyEventsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyEventCard(
-    event: com.udb.proyecto2.data.Event,
+    event: com.example.proyecto2.data.Event,
     currentUserId: String,
     onClick: () -> Unit,
     onCancelAttendance: () -> Unit
