@@ -153,7 +153,7 @@ fun MainScreenWithBottomNav(
                 }
 
                 BottomNavItem.History -> {
-                    com.udb.proyecto2.ui.screens.HistoryScreen(
+                    com.example.proyecto2.ui.screens.HistoryScreen(
                         onNavigateBack = { selectedItem = BottomNavItem.Profile },
                         viewModel = eventViewModel
                     )
